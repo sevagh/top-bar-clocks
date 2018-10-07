@@ -19,9 +19,9 @@ var WorldClocksSection = new Lang.Class({
 
         this._locations = [];
 
-        let layout = new Clutter.GridLayout({ orientation: Clutter.Orientation.VERTICAL });
-        this._grid = new St.Widget({ style_class: 'world-clocks-grid',
-                                     layout_manager: layout });
+        let layout = new Clutter.GridLayout({ orientation: Clutter.Orientation.HORIZONTAL });
+        this._grid = new St.Widget({ layout_manager: layout }); 
+        layout.set_column_spacing(10);
         layout.hookup_style(this._grid);
 
         this._clockAppMon = new Util.AppSettingsMonitor('org.gnome.clocks.desktop',
@@ -56,24 +56,12 @@ var WorldClocksSection = new Lang.Class({
 
             let name = l.get_level() == GWeather.LocationLevel.NAMED_TIMEZONE ? l.get_name()
                                                                               : l.get_city_name();
-            let label = new St.Label({ style_class: 'world-clocks-city',
-                                       text: name,
-                                       x_align: Clutter.ActorAlign.START,
-                                       x_expand: true });
+            let label = new St.Label({ x_align: Clutter.ActorAlign.START });
 
-            let time = new St.Label({ style_class: 'world-clocks-time',
-                                      x_align: Clutter.ActorAlign.END,
-                                      x_expand: true });
+            this._grid.add_child(label);
 
-            if (this._grid.text_direction == Clutter.TextDirection.RTL) {
-                layout.attach(time, 0, i + 1, 1, 1);
-                layout.attach(label, 1, i + 1, 1, 1);
-            } else {
-                layout.attach(label, 0, i + 1, 1, 1);
-                layout.attach(time, 1, i + 1, 1, 1);
-            }
-
-            this._locations[i].actor = time;
+            this._locations[i].actor = label;
+            this._locations[i].city_name = name;
         }
 
         if (this._grid.get_n_children() > 1) {
@@ -93,8 +81,7 @@ var WorldClocksSection = new Lang.Class({
             let l = this._locations[i];
             let tz = GLib.TimeZone.new(l.location.get_timezone().get_tzid());
             let now = GLib.DateTime.new_now(tz);
-            l.actor.text = Util.formatTime(now, { timeOnly: true });
+            l.actor.text = l.city_name + " " + Util.formatTime(now, { timeOnly: true });
         }
     }
 });
-

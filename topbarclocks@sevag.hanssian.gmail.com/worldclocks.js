@@ -1,4 +1,8 @@
 // -*- mode: js; js-indent-level: 4; indent-tabs-mode: nil -*-
+//
+// Mostly copied from the gnome-shell project:
+// https://github.com/GNOME/gnome-shell/blob/master/js/ui/dateMenu.js#L86
+//
 
 const GLib = imports.gi.GLib;
 const GnomeDesktop = imports.gi.GnomeDesktop;
